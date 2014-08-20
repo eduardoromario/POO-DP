@@ -6,7 +6,7 @@ public class Schedule {
 	
 	/**
 	 * Adiciona um novo registro na agenda;
-	 * 
+	 * asdasdaasdasdad
 	 * @param name String
 	 * @param addres String
 	 * @param number String
