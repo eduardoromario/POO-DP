@@ -12,4 +12,11 @@ public class Person {
 		"Inside Person:Constructor");
 		name = ""; address = "";
 	}
+	
+//	class Person {
+	public String getName() {
+		System.out.println("Parent: getName");
+		return name;
+	}
 }
+ 

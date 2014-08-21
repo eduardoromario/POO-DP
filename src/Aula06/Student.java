@@ -5,4 +5,10 @@ public class Student extends Person {
 		System.out.println(
 		"Inside Student:Constructor");
 	}
+	
+	@Override
+	public String getName() {
+		System.out.println("Student: getName");
+		return name;
+	}
 }
