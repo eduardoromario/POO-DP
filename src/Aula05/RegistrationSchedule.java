@@ -5,26 +5,14 @@ public class RegistrationSchedule {
 	private String addres;
 	private String number;
 	private String email;
-	private static int count;
-	
-	public RegistrationSchedule() {
-		count++;
-	}
 	
 	public RegistrationSchedule(String name, String addres, String number, String email) {
 		this.name = name;
 		this.addres = addres;
 		this.number = number;
 		this.email = email;
+	}
 		
-		count++;
-	}
-	
-
-	public static int getCount() {
-		return count;
-	}
-	
 	public String getNumber() {
 		return number;
 	}
