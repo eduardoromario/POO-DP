@@ -1,4 +1,4 @@
-package Aula5;
+package Aula05;
 
 
 public class Schedule {
