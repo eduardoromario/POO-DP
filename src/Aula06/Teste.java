@@ -15,7 +15,6 @@ public class Teste {
 		ref = employeeObject;		
 		temp = ref.getName();
 		System.out.println(temp);
-
 	}
 
 }
