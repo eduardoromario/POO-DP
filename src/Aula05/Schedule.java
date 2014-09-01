@@ -1,8 +1,16 @@
 package Aula05;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 public class Schedule {
-	public RegistrationSchedule[] rSchedule = new RegistrationSchedule [52]; 
+	public RegistrationSchedule[] rSchedule = new RegistrationSchedule [100];
+	public static File fileSchedule = new File("C:\\Users\\eduardo.romario\\workspace\\POO-DP\\src\\Aula05\\files\\schedule.txt");
 	
 	/**
 	 * Adiciona um novo registro na agenda;
@@ -14,28 +22,70 @@ public class Schedule {
 	 * 
 	 */
 	public void AddSchedule(String name, String addres, String number, String email)
-	{
-		for (int i = 0; i < rSchedule.length; i++) 
+	{	
+		try
 		{
-			if(rSchedule[i] == null)  
-			{
-				rSchedule[i] = new RegistrationSchedule(name, addres, number, email);		
-				break;
-			}
+			//FileReader read = new FileReader(fileSchedule);
+			FileWriter fileWriter = new FileWriter(fileSchedule, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			
+			RegistrationSchedule register = new RegistrationSchedule(name, addres, number, email);
+			printWriter.print(register.getName()+";");
+			printWriter.print(register.getAddres()+";");
+			printWriter.print(register.getEmail()+";");
+			printWriter.print(register.getNumber()+"\r\n");
+			printWriter.flush();
+			printWriter.close();
+		}
+		catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Remove um registro da agenda a partir do nome;
-	 * @param name String
+	 * Remove um registro da agenda a partir do email;
+	 * @param email String
 	 * 
 	 */
-	public void RemoveSchedule(String name)
+	public void RemoveSchedule(String email)
 	{
-		int position = SearchSchedulePosition(name);
-		
-		if(position > 0)
-			rSchedule[position] = null;
+		try {
+			String position = SearchSchedulePosition(email);
+			BufferedReader fileRead = new BufferedReader(new FileReader(fileSchedule));
+			
+			File tempFile = new File(fileSchedule.getAbsolutePath() + ".tmp");
+			
+			PrintWriter pw = new PrintWriter(new FileWriter(tempFile));
+			String line = null;
+			
+			while ((line = fileRead.readLine()) != null) 
+			{
+				if (!line.trim().equals(position)) 
+				{
+				
+				  pw.println(line);
+				  pw.flush();
+				}
+			}
+			
+			pw.close();
+			fileRead.close();
+			/*
+			if (!fileSchedule.delete()) 
+			{
+			    System.out.println("Não foi possível excluir o arquivo");
+				return;
+			}
+			*/
+			if (!tempFile.renameTo(fileSchedule))
+				System.out.println("Não foi possível renomear o arquivo");
+			
+		}catch (IOException ex) 
+		{
+			ex.printStackTrace();
+	    }
+
 	}
 	
 	/**
@@ -44,8 +94,7 @@ public class Schedule {
 	 * 
 	 */
 	public void ShowSchedule(RegistrationSchedule schedule)
-	{
-		
+	{	
 		if(schedule != null)
 		{
 			System.out.println("Resultado da Busca para "+ schedule.getName());
@@ -66,53 +115,90 @@ public class Schedule {
 	 */
 	public void ShowAllSchedules()
 	{
-		System.out.println("Todos registros da agenda:");
-		for (int i = 0; i < rSchedule.length; i++) 
+		System.out.println("Todos registros da agenda: \r\n");
+		try
 		{
-			if(rSchedule[i] != null)
-			{
-				System.out.println("Nome:" + rSchedule[i].getName());
-				System.out.println("Endereço:" + rSchedule[i].getAddres());
-				System.out.println("Número:" + rSchedule[i].getNumber());
-				System.out.println("E-mail:" + rSchedule[i].getEmail() + "\r\n");
+			FileReader fileReader = new FileReader(fileSchedule);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String fileLine = "";
+			while ( (fileLine = bufferedReader.readLine()) != null) {
+				String schedule[] = fileLine.split(";");
+				
+				System.out.println("Nome:" + schedule[0]);
+				System.out.println("Endereço:" + schedule[1]);
+				System.out.println("E-mail:" + schedule[2]);
+				System.out.println("Número:" + schedule[3] + "\r\n");
+				
 			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Procura e exibe um registro da agenda;
-	 * @param search String
+	 * Procura e exibe um registro da agenda pelo e-mail;
+	 * @param search String email
 	 */
 	public void SearchSchedules(String search)
-	{
-		for (int i = 0; i < rSchedule.length; i++) 
+	{	
+		try 
 		{
-			if(rSchedule[i] != null && rSchedule[i].getName().equals(search))
-			{
-				ShowSchedule(rSchedule[i]);
-				return;
+			FileReader fileReader = new FileReader(fileSchedule);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String fileLine = "";
+			if ((fileLine = bufferedReader.readLine()).contains(search)) {
+				String schedule[] = fileLine.split(";");
+				
+				String name = schedule[0];
+				String addres = schedule[1];
+				String email = schedule[2];
+				String number = schedule[3];
+				
+				RegistrationSchedule register = new RegistrationSchedule(name, addres, number, email);
+				
+				ShowSchedule(register);
 			}
+			else
+			{
+				ShowSchedule(null);
+			}
+			
+			fileReader.close();
+			bufferedReader.close();
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
-		ShowSchedule(null);
 	}
 	
 	
 	/**
-	 * Retorna o indice do registro na agenda;
+	 * Retorna a linha do arquivo onde o registro está;
 	 * @param search String
-	 * @return int
+	 * @return String
 	 * 
 	 */
-	public int SearchSchedulePosition(String search)
+	public String SearchSchedulePosition(String search)
 	{
-		for (int i = 0; i < rSchedule.length; i++) 
+		try 
 		{
-			if(rSchedule[i] != null && rSchedule[i].getName().equals(search))
-			{
-				return i;
-			}
-		}		
-		return 0;
+			FileReader fileReader = new FileReader(fileSchedule);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String fileLine = "";
+			if ((fileLine = bufferedReader.readLine()).contains(search)) {
+				return (fileLine);
+			}			
+
+			fileReader.close();
+			bufferedReader.close();
+			
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -124,9 +210,9 @@ public class Schedule {
 	 */
 	public void AlterSchedule(String name, String field, String newValue)
 	{
-		String att = field.toLowerCase();
+		/*String att = field.toLowerCase();
 		int position = SearchSchedulePosition(name);
-		if(position > 0)
+		if(position > -1)
 		{
 			switch (att) 
 			{
@@ -154,20 +240,85 @@ public class Schedule {
 		else
 		{
 			System.out.println("Não há registro com esse nome.");
+		}*/
+	}
+	
+	
+	public void menu()
+	{
+	        System.out.println("\tCRUD menu:");
+	        System.out.println("0. Sair");
+	        System.out.println("1. Adicionar registro");
+	        System.out.println("2. Alterar um registro");
+	        System.out.println("3. Excluir um registro");
+	        System.out.println("4. Consultar um registro");
+	        System.out.println("5. Consultar todos os registros \r\n");
+	        System.out.println("Opcao:");
+	}
+	 
+	private static void read() 
+	{
+		try 
+		{
+			String search = "email@email.com";
+			FileReader fileReader = new FileReader(fileSchedule);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			String linha = "";
+			while ( (linha = bufferedReader.readLine()).contains(search)) {
+				
+				System.out.println(linha);
+			}
+			
+			fileReader.close();
+			bufferedReader.close();
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
 	}
 	
 	public static void main(String[] args)
 	{
-		Schedule a = new Schedule();
-		a.AddSchedule("Eduardo", "Mostardeiro", "5599999999", "email@email.com");
-		a.AddSchedule("Joao", "Mostardeiro", "5599999999", "email@email.com");
-		a.AddSchedule("Maria", "Mostardeiro", "5599999999", "email@email.com");
+		Schedule sc = new Schedule();
+		int option;
 		
-		a.SearchSchedules("Joao");
+		sc.RemoveSchedule("email@email.com");
 		
-		a.AlterSchedule("Joao", "Namsadae", "Pedro");
-		
-		a.SearchSchedules("Pedro");
+
+		/*
+		Scanner userEntry = new Scanner(System.in);
+        do
+        {
+            menu();
+            option = userEntry.nextInt();
+            
+            switch(option)
+            {
+	            case 1:
+	            	System.out.println("\t Adicionando Registro");
+	            	sc.AddSchedule("Eduardo", "Mostardeiro", "5599999999", "email@email.com");
+	                break;
+	                
+	            case 2:
+	            	System.out.println("\t Alterando Registro");
+	                break;
+	                
+	            case 3:
+	            	System.out.println("\t Excluindo Registro");
+	                break;
+	                
+	            case 4:
+	            	System.out.println("\t Consultando Registro");
+	                break;
+	                
+	            case 5:
+	            	System.out.println("\t Exibindo todos os registros");
+	                break;
+	            
+	            default:
+	                System.out.println("Opção inválida.");
+            }
+        } while(option != 0);
+        */
 	}
 }
