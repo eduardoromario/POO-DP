@@ -10,7 +10,8 @@ import java.util.Scanner;
 
 public class Schedule {
 	public RegistrationSchedule[] rSchedule = new RegistrationSchedule [100];
-	public static File fileSchedule = new File("C:\\Users\\eduardo.romario\\workspace\\POO-DP\\src\\Aula05\\files\\schedule.txt");
+	public static File fileSchedule = new File("C:\\Users\\curso\\workspace\\.metadata\\POO-DP\\src\\Aula05\\files\\schedule.txt");
+	//public static File fileSchedule = new File("C:\\Users\\eduardo.romario\\workspace\\POO-DP\\src\\Aula05\\files\\schedule.txt");
 	
 	/**
 	 * Adiciona um novo registro na agenda;
@@ -36,6 +37,7 @@ public class Schedule {
 			printWriter.print(register.getNumber()+"\r\n");
 			printWriter.flush();
 			printWriter.close();
+			
 		}
 		catch (IOException e) 
 		{
@@ -246,14 +248,7 @@ public class Schedule {
 	
 	public void menu()
 	{
-	        System.out.println("\tCRUD menu:");
-	        System.out.println("0. Sair");
-	        System.out.println("1. Adicionar registro");
-	        System.out.println("2. Alterar um registro");
-	        System.out.println("3. Excluir um registro");
-	        System.out.println("4. Consultar um registro");
-	        System.out.println("5. Consultar todos os registros \r\n");
-	        System.out.println("Opcao:");
+	        
 	}
 	 
 	private static void read() 
@@ -282,14 +277,20 @@ public class Schedule {
 		Schedule sc = new Schedule();
 		int option;
 		
-		sc.RemoveSchedule("email@email.com");
-		
-
-		/*
+		boolean next = true;
 		Scanner userEntry = new Scanner(System.in);
+
         do
         {
-            menu();
+        	System.out.println("\tCRUD menu:");
+	        System.out.println("0. Sair");
+	        System.out.println("1. Adicionar registro");
+	        System.out.println("2. Alterar um registro");
+	        System.out.println("3. Excluir um registro");
+	        System.out.println("4. Consultar um registro");
+	        System.out.println("5. Consultar todos os registros \r\n");
+	        System.out.println("Opcao:");
+	        
             option = userEntry.nextInt();
             
             switch(option)
@@ -314,11 +315,14 @@ public class Schedule {
 	            case 5:
 	            	System.out.println("\t Exibindo todos os registros");
 	                break;
+
+	            case 0:
+	            	next = false;
+	                break;
 	            
 	            default:
 	                System.out.println("Opção inválida.");
             }
-        } while(option != 0);
-        */
+        } while(next == true);
 	}
 }
