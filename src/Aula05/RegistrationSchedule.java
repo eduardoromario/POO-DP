@@ -13,6 +13,10 @@ public class RegistrationSchedule {
 		this.email = email;
 	}
 		
+	public RegistrationSchedule() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getNumber() {
 		return number;
 	}
